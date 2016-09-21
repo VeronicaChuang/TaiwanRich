@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html>
+<title>大富翁</title>
+<meta charset="UTF-8">
+<script type="text/javascript" src="jquery.js"></script>
+<!--css樣式-->
+<style>
+    table,
+    tr,
+    td {
+        border: 1px solid black;       
+        
+    }
+    
+    table {
+        width: 100%;
+        height: 100%;
+        tablelayout: fixed;    
+        
+    }
+    
+    #tableFrame {
+        width: 1024px;
+        height: 768px;
+    }
+    /*------------------骰子地區-----------*/
+    
+    #dicePlace {
+        left: 35%;
+        /*text-align:  center;*/
+        /*background: black;*/
+    }
+    
+    
+    /*----------------放人物的canvas------*/
+    
+    #playerCanvas{
+        height: 100px;
+        position: absolute;
+        top: 0px;
+    }
+    
+  /*  人物緩緩移動可用，把top改成要的方向*/
+        /*-webkit-transition: top 2s ease-out;*/
+		/*-ms-transition: top 2s ease-out;*/
+		/*transition: top 2s ease-out;*/
+</style>
+
+
+<body>
+    <!--版面布局--大外框-->
+    <div id="framEdge" class="frame">
+        <div id="tableFrame" class="frame">
+            <!--大富翁格子-->
+            <table id="checkerboard">
+                <tr>
+                    <td>監獄</td>
+                    <td>B1</td>
+                    <td>機會</td>
+                    <td>D1</td>
+                    <td>E1</td>
+                    <td>F1</td>
+                    <td>G1</td>
+                    <td>Bonus</td>
+                </tr>
+                <tr>
+                    <td>A2</td>
+                    <td rowspan="6" colspan="6" id="view">
+                        <div style="position:relative">
+                            <canvas id="dicePlace" style="position:relative"></canvas>
+                            
+                        </div>
+                    </td>
+                    <!--<td>C2</td>-->
+                    <!--<td>D2</td>-->
+                    <!--<td>E2</td>-->
+                    <!--<td>F2</td>-->
+                    <!--<td>G2</td>-->
+                    <td>H2</td>
+                </tr>
+                <tr>
+                    <td>A3</td>
+                    <!--<td>B3</td>-->
+                    <!--<td>C3</td>-->
+                    <!--<td>D3</td>-->
+                    <!--<td>E3</td>-->
+                    <!--<td>F3</td>-->
+                    <!--<td>G3</td>-->
+                    <td>H3</td>
+                </tr>
+                <tr>
+                    <td>A4</td>
+                    <!--<td>B4</td>-->
+                    <!--<td>C4</td>-->
+                    <!--<td>D4</td>-->
+                    <!--<td>E4</td>-->
+                    <!--<td>F4</td>-->
+                    <!--<td>G4</td>-->
+                    <td>H4</td>
+                </tr>
+                <tr>
+                    <td>A5</td>
+                    <!--<td>B5</td>-->
+                    <!--<td>C5</td>-->
+                    <!--<td>D5</td>-->
+                    <!--<td>E5</td>-->
+                    <!--<td>F5</td>-->
+                    <!--<td>G5</td>-->
+                    <td>H5</td>
+                </tr>
+                <tr>
+                    <td>A6</td>
+                    <!--<td>B6</td>-->
+                    <!--<td>C6</td>-->
+                    <!--<td>D6</td>-->
+                    <!--<td>E6</td>-->
+                    <!--<td>F6</td>-->
+                    <!--<td>G6</td>-->
+                    <td>H6</td>
+                </tr>
+                <tr>
+                    <td>A7</td>
+                    <!--<td>B7</td>-->
+                    <!--<td>C7</td>-->
+                    <!--<td>D7</td>-->
+                    <!--<td>E7</td>-->
+                    <!--<td>F7</td>-->
+                    <!--<td>G7</td>-->
+                    <td>稅$$</td>
+                </tr>
+                <tr>
+                    <td id="go">GO!</td>
+                    <td>B8</td>
+                    <td>C8</td>
+                    <td>D8</td>
+                    <td>命運</td>
+                    <td>F8</td>
+                    <td>G8</td>
+                    <td>直達</td>
+                </tr>
+            </table>
+           <!--畫布-->
+             <canvas id="playerCanvas" style="top:0px"></canvas>
+              <!--功能鍵區-->
+        </div>
+       
+    </div>    
+    
+    <!--人物隱藏    -->
+    <div id="playerPhoto" >
+        <img id="Minion" src="imgs/Minion72.png" 
+        width="auto" height="auto" style="display:none">
+    </div>
+    
+    
+    <div>
+        <button type="bottom" id="dice1">骰子</button>
+        <a id="test">123</a>
+    </div>
+ 
+
+
+    <script>
+    //   var playerC = $("#playerPhoto".offset);
+    //   var realX = playerC.left;
+       
+    //   alert(realX);
+    //   var realY= document.getElementById("playerPhoto").offsetLeft;
+    //   alert(realY)
+       
+    
+//--------    骰子區配置-------------- Height 0-650, width 0-900
+        var dice;
+        var topValue;
+        var leftValuel
+        var moveTop;          //xxxxxxxxxxxxx骰子綁人物未成功
+        var moveleft =0
+       
+        $("#dice1").click(function(){
+            dice = Math.floor((Math.random() * 6) + 1);
+            $("#test").html(dice);
+            alert(realX)
+            //   alert(topValue);
+            moveTop = dice * 90;
+            // alert(moveTop);
+
+            // 如果canvas已經650了，要往右走
+            //取得top值已轉正整數，只是第一次點會是nan
+           
+            // if(topValue <= 650)
+           
+            switch(dice){
+                case 1:
+                    $("canvas").animate({
+                    top: "+=90px"}, "slow")
+                    topValue = parseInt($("canvas").css("top"));
+                    // alert(topValue);
+                    break;
+                case 2:
+                    $("canvas").animate({
+                    top: "+=180px"}, "slow")
+                    topValue = parseInt($("canvas").css("top"));
+                    // alert(topValue);
+                    break;
+                case 3:
+                    $("canvas").animate({
+                    top: "+=270px"}, "slow")
+                    topValue = parseInt($("canvas").css("top"));
+                    // alert(topValue);
+                    break;
+                case 4:
+                    $("canvas").animate({
+                    top: "+=360px"}, "slow")
+                    topValue = parseInt($("canvas").css("top"));
+                    // alert(topValue);
+                    break;
+                case 5:
+                    $("canvas").animate({
+                    top: "+=450px"}, "slow")
+                    topValue = parseInt($("canvas").css("top"));
+                    // alert(topValue);
+                    break;
+                case 6:
+                    $("canvas").animate({
+                    top: "+=540px"}, "slow")
+                    topValue = parseInt($("canvas").css("top"));
+                    // alert(topValue);
+                    break;
+            }
+            
+            // else if(topValue == 650){
+            //     switch(dice){
+            //     case 1:
+            //         $("canvas").animate({
+            //         left: "+=90px"}, "slow")
+            //         leftValuel = parseInt($("canvas").css("left"));
+            //         // alert(topValue);
+            //         break;
+            //     case 2:
+            //         $("canvas").animate({
+            //         left: "+=180px"}, "slow")
+            //         leftValuel = parseInt($("canvas").css("left"));
+            //         // alert(topValue);
+            //         break;
+            //     case 3:
+            //         $("canvas").animate({
+            //         left: "+=270px"}, "slow")
+            //         leftValuel = parseInt($("canvas").css("left"));
+            //         // alert(topValue);
+            //         break;
+            //     case 4:
+            //         $("canvas").animate({
+            //         left: "+=360px"}, "slow")
+            //         leftValuel = parseInt($("canvas").css("left"));
+            //         // alert(topValue);
+            //         break;
+            //     case 5:
+            //         $("canvas").animate({
+            //         left: "+=450px"}, "slow")
+            //         leftValuel = parseInt($("canvas").css("left"));
+            //         // alert(topValue);
+            //         break;
+            //     case 6:
+            //         $("canvas").animate({
+            //         left: "+=540px"}, "slow")
+            //         leftValuel = parseInt($("canvas").css("left"));
+            //         // alert(topValue);
+            //         break;
+            // }
+               
+            // }
+
+            
+            
+            // $("canvas").animate({
+            //   top: function({
+            //       topValue*=-1+"px"
+            //   })
+            // }, "slow")
+
+            
+            
+            // $("canvas").animate({
+            //   top: "+=90px"}, "slow")
+            // topValue = $("#canvas").offset().top;
+            // alert(topValue);
+            
+            // var top = $("#div1").offset().top;
+        });
+        
+        
+        // function topmvoe(){
+        //   return (dice*90)+"px"
+        // }
+        
+       
+//--------   產生人出來--------------人是附著在<canvas id="playerCanvas">
+         $(document).ready( function() {
+            var c = document.getElementById("playerCanvas");
+            var ctx = c.getContext("2d");
+            var minions = document.getElementById("Minion");
+            ctx.drawImage(minions, 50, 0, 130, 150);
+            // ctx.drawImage(image, dx, dy);
+            // ctx.drawImage(image, dx, dy, dWidth, dHeight);
+            // ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
+        });
+      
+//--------   人物畫布  ----------------    
+        // var topDis = $("#playerCanvas").attr("top");
+        // alert(topDis);
+        
+        // var img1 = $("#playerCanvas").css(top);      //xxxxxxxxxxxxx骰子綁人物未成功
+        // img1.top = topValue +"px";
+        
+        // alert(img1.top);
+        // $("#playerCanvas").css({
+        //     top: img1.offset().top,
+        //     left: img1.offset().left,
+        //     margin: "0px"
+        // })
+       
+        
+        // JSON.stringify(result)
+//--------------- 骰子與人物互動--------
+
+        //取得原本的top,left直
+        
+        // $(document).ready(function(){
+        //     $("button").click(function(){
+        //         $("div").animate({
+        //             left: '250px',
+        //             height: '+=150px',
+        //             width: '+=150px'
+        //         });
+        //     });
+        // });       
+
+
+//----------------參考資訊
+
+
+  //css用變數
+        // step1:宣告一個變數
+        // 使用 jquery .attr(); 的 src 的屬性，就可以將你指定的圖片入徑的值給帶出來
+        // var v = $("#yourblock img").attr("src");
+        
+        // step2:
+        // 將step1 所宣告的變數，帶入 jquery .css(); 的 background-img的圖片入徑裡
+        //  $("#yourblock").css({'background-image': 'url(' + v + ')',});
+        // 只需這兩個step就可將step1指定<img>標籤，變成step2裡指定block的background了！！
+  // 位移參考
+        // $( "div" ).on( "click", function() {
+        // $( this ).css({
+        //     width: function( index, value ) {
+        //         return parseFloat( value ) * 1.2;
+        // },
+        //     height: function( index, value ) {
+        //         return parseFloat( value ) * 1.2;
+        // }
+        // });
+        // });
+        
+
+
+        //初始要每個人10000
+    </script>
+</body>
+
+</html>

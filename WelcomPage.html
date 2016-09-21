@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>大富翁</title>
+    <meta charset="utf-8" />
+    <script type="text/javascript" src="jquery.js"></script>
+    <script src="jquery-1.9.1.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/normalize.css" />
+    <link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.2.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/demo.css" />
+    <link rel="stylesheet" type="text/css" href="css/component.css" />
+    <!--<link rel="stylesheet"
+          href="jquery.mobile-1.3.2/jquery.mobile-1.3.2.min.css" />
+    <script src="jquery.mobile-1.3.2/jquery.mobile-1.3.2.min.js"></script>-->
+    <style>
+        body {
+            /*font-size: 20px;*/
+            /*background-image: url('imgs/WB.jpg');*/
+            /*background-repeat:no-repeat;*/
+            /*background-size:cover;*/
+            margin:0;
+            padding:0;
+            background: #000 url(imgs/WB.jpg) center center fixed no-repeat;
+            -moz-background-size: cover;
+            background-size: cover;
+             text-align: center;
+            vertical-align: middle;
+        }
+
+        #bodyBackG {
+            width:100%;
+            height:100%;
+            top:10%;
+            display: block;
+            margin: 0, auto;
+        }
+
+        /*button 美化網站 http://css3buttongenerator.com/  */
+        #sendPlayer {
+            background: #34d981;
+            background-image: -webkit-linear-gradient(top, #34d981, #2bb895);
+            background-image: -moz-linear-gradient(top, #34d981, #2bb895);
+            background-image: -ms-linear-gradient(top, #34d981, #2bb895);
+            background-image: -o-linear-gradient(top, #34d981, #2bb895);
+            background-image: linear-gradient(to bottom, #34d981, #2bb895);
+            -webkit-border-radius: 30;
+            -moz-border-radius: 30;
+            border-radius: 30px;
+            -webkit-box-shadow: 3px 4px 9px #050505;
+            -moz-box-shadow: 3px 4px 9px #050505;
+            box-shadow: 3px 4px 9px #050505;
+            font-family: Courier New;
+            color: #fafafa;
+            font-size: 26px;
+            padding: 9px 100px 10px 20px;
+            border: solid #26449e 2px;
+            text-decoration: none;
+        }
+
+        #sendPlayer:hover {
+                background: #3cb0fd;
+                background-image: -webkit-linear-gradient(top, #3cb0fd, #3498db);
+                background-image: -moz-linear-gradient(top, #3cb0fd, #3498db);
+                background-image: -ms-linear-gradient(top, #3cb0fd, #3498db);
+                background-image: -o-linear-gradient(top, #3cb0fd, #3498db);
+                background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
+                text-decoration: none;
+            }
+
+        .roles {
+            width: 110px;
+            height: 130px;
+        }
+
+        label {
+            margin-right: 100px;
+        }
+        
+    </style>
+</head>
+<body>
+    <!--背景音樂-->
+    <audio autoplay loop>
+      <source src="music/roleChoose.wav" type="audio/wav">
+    </audio>
+    <div id="bodyBackG" class="outBag">
+        <form id="keyinA" style="padding-top:20px; text-align:center; vertical-align:middle; position:relative;">
+            <div class="container">
+                <img src="imgs/welcomLogo.png" /> <br />
+
+                <section style="padding-top:40px; background-color:none;">
+                    <!--  <h2>Jiro</h2>-->
+                    <span class="input input--jiro" style="margin:1px;">
+                        <input class="input__field input__field--jiro" type="text" id="input-10" />
+                        <label class="input__label input__label--jiro" for="input-10">
+                            <span class="input__label-content input__label-content--jiro" style="font-size:20px; color:brown;" id="p1Name">請輸入玩家1名稱：</span>
+                        </label>
+                    </span>
+                    <span class="input input--jiro" style="margin:0px;">
+                        <input class="input__field input__field--jiro" type="text" id="input-11" />
+                        <label class="input__label input__label--jiro" for="input-10">
+                            <span class="input__label-content input__label-content--jiro" style="font-size:20px; color:brown;" id="p2Name">請輸入玩家2名稱：</span>
+                        </label>
+                    </span>
+                </section>
+            </div><!-- /container -->
+            <h3 style="color:#6C3365; font-family: cursive;">請選玩家1角色：</h3>
+            <label for="role1-1" style="color:#6C3365">
+                <input id="role1-1" type="radio" name="p1Info" value="1">
+                <img class="roles" src="imgs/1.gif" style="vertical-align:middle" />
+            </label>
+            <label for="role1-2" style="color:#6C3365">
+                <input id="role1-2" type="radio" name="p1Info" value="2">
+                <img class="roles" src="imgs/2.gif" style="vertical-align:middle" />
+            </label>
+            <label for="role1-3" style="color:#6C3365">
+                <input id="role1-3" type="radio" name="p1Info" value="3">
+                <img class="roles" src="imgs/3.gif" style="vertical-align:middle" />
+            </label>
+            <h3 style="color:#4A4AFF">請選玩家2角色：</h3>
+            <label for="role2-4" style="color:#4A4AFF">
+                <input id="role2-4" type="radio" name="p2Info" value="4">
+                <img class="roles" src="imgs/4.gif" style="vertical-align:middle; " />
+            </label>
+            <label for="role2-5" style="color:#4A4AFF">
+                <input id="role2-5" type="radio" name="p2Info" value="5">
+                <img class="roles" src="imgs/5.gif" style="vertical-align:middle; " />
+            </label>
+            <label for="role2-6" style="color:#4A4AFF">
+                <input id="role2-6" type="radio" name="p2Info" value="6">
+                <img class="roles" src="imgs/6.gif" style="vertical-align:middle" />
+            </label>
+            <br /><br />
+            <button type="reset" id="sendPlayer" style="width:70px; height:50px;" onclick="saveGo()">
+                Start
+            </button>
+        </form>
+    </div>
+    <!-----------------------主程式script----------------------------->
+    <script type="text/javascript">
+    // ----取得input值---
+    var p1 = document.getElementById('input-10');
+    var p2 = document.getElementById('input-11');
+
+    // ----取得radio值---
+    var form = document.getElementById('keyinA');
+    var isPhotoBlank= 0;
+    var isNameBlank=0;
+
+        function saveGo(){
+            if(p1.value =="" || p2.value ==""){
+                isNameBlank = 1;
+                alert("請輸入玩家名稱");
+           } else{
+                isNameBlank = 0;
+                localStorage.setItem("player1Name", p1.value);
+                localStorage.setItem("player2Name", p2.value);
+           }
+
+           for(var i=0;i<form.p1Info.length;i++){          //抓player1的角色
+                    if(form.p1Info[i].checked){
+                      var p1Photo = form.p1Info[i].value;
+                      isPhotoBlank +=1;
+                      localStorage.setItem("player1img", p1Photo);
+                    }
+            }
+
+            for(var i=0;i<form.p2Info.length;i++){         //抓player2的角色
+                    if(form.p2Info[i].checked){
+                      var p2Photo = form.p2Info[i].value;
+                      isPhotoBlank +=1;
+                      localStorage.setItem("player2img", p2Photo)
+                    }
+            }
+
+            if(isPhotoBlank==2 & isNameBlank ==0){
+                document.location = 'Taiwan_Rich.html';  //轉跳網頁
+            } else if(isPhotoBlank!=2){
+                isPhotoBlank =0;
+                alert("請選擇角色");
+
+            }
+        }
+    </script>
+    <!-----------------------------輸入框script-------------------------------->
+    <script src="js/classie.js"></script>
+    <script>
+			(function() {
+		//		 trim polyfill : https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/Trim
+				if (!String.prototype.trim) {
+					(function() {
+						// Make sure we trim BOM and NBSP
+						var rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
+						String.prototype.trim = function() {
+							return this.replace(rtrim, '');
+						};
+					})();
+				}
+
+				[].slice.call( document.querySelectorAll( 'input.input__field' ) ).forEach( function( inputEl ) {
+					// in case the input is already filled..
+					if( inputEl.value.trim() !== '' ) {
+						classie.add( inputEl.parentNode, 'input--filled' );
+					}
+
+					// events:
+					inputEl.addEventListener( 'focus', onInputFocus );
+					inputEl.addEventListener( 'blur', onInputBlur );
+				} );
+
+				function onInputFocus( ev ) {
+					classie.add( ev.target.parentNode, 'input--filled' );
+				}
+
+				function onInputBlur( ev ) {
+					if( ev.target.value.trim() === '' ) {
+						classie.remove( ev.target.parentNode, 'input--filled' );
+					}
+				}
+			})();
+    </script>
+</body>
+</html>

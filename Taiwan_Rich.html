@@ -1,0 +1,1467 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>大富翁</title>
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <script src="jquery-1.9.1.min.js"></script>
+    
+    <!--css樣式-->
+    <!--PRESENTATION https://www.emaze.com-->
+    <style>
+        body {
+            /*background-image: url("imgs/bg.jpg");*/
+            /*background-repeat: repeat-y;*/
+            /*background-size: 100%;*/
+            margin:0;
+            padding:0;
+            background: #000 url("imgs/bg.jpg") center center fixed no-repeat;
+            -moz-background-size: cover;
+            background-size: cover;
+        }
+
+        table,
+        tr,
+        td {
+            border: 1px solid RGB(192,192,192);
+            color:	white;
+            text-align: center;
+        }
+        
+        table {
+            position: relative;
+            width: 800px;
+            height: 800px;
+            table-layout: fixed;
+            border-collapse: collapse;
+            
+        }
+        #tableFrame {
+            width: 800px;
+            height: 800px;
+            position: relative;
+            background-color: rgba(37, 116, 285, 0.6);
+        }
+
+        /*------------------骰子地區-----------*/
+        /*骰子大小*/
+        #dicePic {  /*畫面中的骰子圖*/
+            width: 100px;
+            height: 100px;
+        }
+        /*骰子袋子*/
+        #dicDiv {
+            position: absolute;
+            top: 350px;
+            left: 350px;
+        }
+
+        .player { /*走格子的人物*/
+            position: relative;
+            top: 15px;
+            left: 15px;
+        }
+        /*最外面的div*/
+        #outterF {
+            position: absolute;
+            top: 50px;
+            left: 50px;
+            width: 1000px;
+        }
+        /*功能區的div*/
+        #funcF {
+            /*background-color: blanchedalmond;*/
+            /*background-image: url("imgs/funP1.jpg");*/
+            background-size: contain;
+            float: right;
+            width: 400px;
+            height: 800px;
+            margin-top: -800px;
+            left: 800px;
+            position: absolute;
+        }
+
+        #dice1 { /*GO Button*/
+            background: #ffffff;
+            background-image: -webkit-linear-gradient(top, #ffffff, #fa6ef1);
+            background-image: -moz-linear-gradient(top, #ffffff, #fa6ef1);
+            background-image: -ms-linear-gradient(top, #ffffff, #fa6ef1);
+            background-image: -o-linear-gradient(top, #ffffff, #fa6ef1);
+            background-image: linear-gradient(to bottom, #ffffff, #fa6ef1);
+            -webkit-border-radius: 32;
+            -moz-border-radius: 32;
+            border-radius: 32px;
+            text-shadow: 2px 1px 5px #915a73;
+            -webkit-box-shadow: 5px 6px 6px #666666;
+            -moz-box-shadow: 5px 6px 6px #666666;
+            box-shadow: 5px 6px 6px #666666;
+            font-family: Georgia;
+            color: #613636;
+            font-size: 35px;
+            padding: 10px 20px 10px 20px;
+            text-decoration: none;
+        }
+
+        #dice1:hover { /*GO Button*/
+            background: #3cb0fd;
+            background-image: -webkit-linear-gradient(top, #3cb0fd, #E0E0E0);
+            background-image: -moz-linear-gradient(top, #3cb0fd, #E0E0E0);
+            background-image: -ms-linear-gradient(top, #3cb0fd, #E0E0E0);
+            background-image: -o-linear-gradien(top, #3cb0fd, #E0E0E0);
+            background-image: linear-gradient(to bottom, #3cb0fd, #E0E0E0);
+            text-decoration: none;
+        }
+        
+        .playerF {  /*功能區玩家區塊*/
+            border-style: solid;
+            border-width: 6px;
+            border-color: lightgray;
+            /*background: #F5FFE8;*/
+            background-color: rgba(67, 138, 43, 0.7);
+            /*background-image:url('imgs/playerFrame.jpg');*/
+            border-radius:30px;
+            -moz-border-radius:30px;
+            -webkit-border-radius:30px;
+        }
+        #p1Photo{
+            width:90px; 
+            height:100px; 
+            vertical-align:middle; 
+            margin-bottom:10px;
+        }
+        
+        #p2Photo{
+            width:90px; 
+            height:100px; 
+            vertical-align:middle; 
+            margin-bottom:10px;
+        }
+        
+        .photoGroups{   /*所有玩家右方圖像*/
+            width:50px;
+            height:60px;
+            padding-left:10px;
+            
+        }
+        
+        #btnF{ /*go按鈕的袋子*/
+            text-align:center; 
+            position:absolute; 
+            top:650px; 
+            left:150px;
+        }
+        
+        #infoShow{  /*中間文字展現區*/
+           color: yellow; 
+           position:relative; 
+           top:-200px; 
+           width:auto; 
+           font-size:20pt;
+        }
+        /* ----------------------scord div -------------------*/
+        .scord { /*scord box*/
+        	position: relative;
+        	width: 700px;
+        	height:700px;
+        	background-color: rgba(252, 227, 114, 0.8);
+        	color: #8a3114;
+        	padding: 20px;
+        	border: 2px double #ccc;
+        	-moz-border-radius: 40px;
+        	-webkit-border-radius: 40px;
+        	-khtml-border-radius: 40px;
+        	-moz-box-shadow: 10 10px 15px black;
+        	-webkit-box-shadow: 10px 10px 20px black;
+        	z-index: 101;
+        	-webkit-transition: left 0.9s ease-out;
+        	-ms-transition: left 0.9s ease-out;
+        	transition: left 0.9s ease-out;
+        	text-align: center;
+        }
+        .scord h1 {/*scord box title*/
+        	/*border-bottom: 5px outset #D9DBCA;*/
+        	margin: -20px -20px 0px -20px;
+        	padding: 10px;
+        	background-color: rgba(252, 227, 114,0);
+        	color: #4141fb;
+        	-moz-border-radius: 50px 50px 0px 0px;
+        	-webkit-border-top-left-radius: 50px;
+        	-webkit-border-top-right-radius: 50px;
+        	-khtml-border-top-left-radius: 50px;
+        	-khtml-border-top-right-radius: 50px;
+        	text-align: center;       
+        }
+        .scordLayer{
+            position:absolute;
+            top:-900px; /*top:30px還原*/
+            left: 30%;
+            /*background-color: black;*/
+        	width:1000px;
+        	height:750px;
+        	text-align: center;   
+        }
+        #winLogo{
+            position:relative;
+            margin-top:-80px;
+            top:30px;
+        	width:600px;
+        	height:600px;
+        }        
+        #winnerName{
+            margin-top:20px;
+            font-size: 50px;
+        }
+        
+        a.boxclose {
+        	float: right;
+        	width: 50px;
+        	height: 50px;
+        	background-image: url(imgs/close.png);
+        	background-size:contain;
+        	margin-top: -30px;
+        	margin-right: -30px;
+        	cursor: pointer;
+        }
+        /*---------scord div end-------------------------*/
+    </style>
+</head>
+<body>
+    <!--背景音樂-->
+    <audio autoplay loop>
+      <source src="music/playGame.mp3" type="audio/mpeg">
+    </audio>
+    <div id="outterF" style="left:13%;">
+        <!--版面布局..遊戲區外框-->
+        <div id="framEdge" class="frame">
+            <!--版面布局..遊戲區中框-->
+            <div id="tableFrame" class="frame">
+                <!--大富翁格子-->
+                <table id="checkerboard">
+                    <tr>
+                        <td id="0" background="imgs/start.png" style="background-position: center; background-size:100%; background-repeat:no-repeat;">
+                            </td>
+                        <td id="27">花蓮縣</td>
+                        <td id="26" background="imgs/chance.png" style="background-position: center; background-size:50%; background-repeat:no-repeat;">
+                            機會</td>
+                        <td id="25">新竹市</td>
+                        <td id="24">南投縣</td>
+                        <td id="23">新竹縣</td>
+                        <td id="22">台中市</td>
+                        <td id="21" background="imgs/box.png" style="background-position: center bottom; background-size:100%; background-repeat:no-repeat;">
+                            </td>
+                    </tr>
+                    <tr>
+                        <td id="1">苗栗縣</td>
+                        <td rowspan="6" colspan="6" id="centerView">
+                            <div id="infoShow"></div>
+                            <div id="dicDiv">
+                                <img id="dicePic" src="imgs/dice1.png" />
+                            </div>
+                        </td>
+                        <!--<td>C2</td>-->
+                        <!--<td>D2</td>-->
+                        <!--<td>E2</td>-->
+                        <!--<td>F2</td>-->
+                        <!--<td>G2</td>-->
+                        <td id="20">宜蘭縣</td>
+                    </tr>
+                    <tr>
+                        <td id="2">彰化縣</td>
+                        <!--<td>B3</td>-->
+                        <!--<td>C3</td>-->
+                        <!--<td>D3</td>-->
+                        <!--<td>E3</td>-->
+                        <!--<td>F3</td>-->
+                        <!--<td>G3</td>-->
+                        <td id="19">台東縣</td>
+                    </tr>
+                    <tr>
+                        <td id="3">桃園市</td>
+                        <!--<td>B4</td>-->
+                        <!--<td>C4</td>-->
+                        <!--<td>D4</td>-->
+                        <!--<td>E4</td>-->
+                        <!--<td>F4</td>-->
+                        <!--<td>G4</td>-->
+                        <td id="18">新北市</td>
+                    </tr>
+                    <tr>
+                        <td id="4">屏東縣</td>
+                        <!--<td>B5</td>-->
+                        <!--<td>C5</td>-->
+                        <!--<td>D5</td>-->
+                        <!--<td>E5</td>-->
+                        <!--<td>F5</td>-->
+                        <!--<td>G5</td>-->
+                        <td id="17">嘉義市</td>
+                    </tr>
+                    <tr>
+                        <td id="5">高雄市</td>
+                        <!--<td>B6</td>-->
+                        <!--<td>C6</td>-->
+                        <!--<td>D6</td>-->
+                        <!--<td>E6</td>-->
+                        <!--<td>F6</td>-->
+                        <!--<td>G6</td>-->
+                        <td id="16">雲林縣</td>
+                    </tr>
+                    <tr>
+                        <td id="6">基隆市</td>
+                        <!--<td>B7</td>-->
+                        <!--<td>C7</td>-->
+                        <!--<td>D7</td>-->
+                        <!--<td>E7</td>-->
+                        <!--<td>F7</td>-->
+                        <!--<td>G7</td>-->
+                        <td id="15" background="imgs/tax.png" style="background-position: center; background-size:80%; background-repeat:no-repeat;">
+                            </td>
+                    </tr>
+                    <tr>
+                        <td id="7" background="imgs/temple.png" style="background-position: center bottom; background-size:100%; background-repeat:no-repeat;">
+                            </td>
+                        <td id="8">台南市</td>
+                        <td id="9">嘉義縣</td>
+                        <td id="10">台北市</td>
+                        <td id="11" background="imgs/fate.png" style="background-position: center; background-size:90%; background-repeat:no-repeat;">
+                            命運</td>
+                        <td id="12">澎湖縣</td>
+                        <td id="13">釣魚台</td>
+                        <td id="14" background="imgs/Park.png" style="background-position: center; background-size:90%; background-repeat:no-repeat;">
+                            公園</td>
+                    </tr>
+                </table>
+                <!--畫布-->
+                <!--<canvas id="playerCanvas" style="background:ivory" ></canvas>-->
+                <!--功能鍵區-->
+            </div>
+        </div>
+        <div id="funcF" style="text-align:center;">
+            <div id="playerInfo" />
+            <div id="frameLight1" class="playerF">
+                <h1> Player 1</h1>
+                <img id="p1Photo"/>
+                <span id="1name" style="font-size:28px; margin-left:20px; ">
+                    Name
+                </span>
+                <div>
+                    <h2>
+                        現金$
+                        <span style="height:80px; margin-left:10px;">
+                           <b id="p1HowMuch"></b>
+                        </span>
+                    </h2>
+                </div>
+            </div>
+            <hr />
+            <div id="frameLight2" class="playerF">
+                <div>
+                    <h1> Player 2</h1>
+                    <img id="p2Photo"/>
+                    <span id="2name" style="font-size:28px; margin-left:20px; ">
+                        Name
+                    </span>
+                    <div>
+                        <h2>
+                            現金$
+                            <span style="height:80px; margin-left:10px;">
+                                <b id="p2HowMuch"></b>
+                            </span>
+                        </h2>
+                    </div>
+                </div>
+                <div id="btnF" class="playerPhotoGroup">
+                    <button type="button" id="dice1">GO!!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--人物   -->
+    <div id="playerPhoto1" class="movePlayers" style="position:absolute; top:0px; left:0px;">
+        <img id="playerOne" class="player" width="80" height="80" style="position:absolute;">
+    </div>
+    <div id="playerPhoto2" class="movePlayers" style="position:absolute; top:0px; left:0px;">
+        <img id="playerTwo" class="player" width="80" height="80" style="position:absolute;">
+    </div>
+    <!--scord div-->
+    <div id="whiteLayer" class="scordLayer">
+		<div id="resultBox" class="scord">
+		    <a class="boxclose" id="boxclose"></a>
+    		<h1>遊戲結束</h1>
+        		<div style="text-align:center;">
+        		<p id="winnerName"></p>
+        		<img id="winLogo" src="imgs/winner.png">
+    		</div>      
+		</div>
+	</div>
+    <!--scord div end-->
+    <script>
+        //--------    骰子Click事件-------------- Height 0-650, width 0-900;  Y一格130px;  X一格95px;
+        var dice; //骰子點數
+        var topCount = 0; //回傳目前top值
+        var topCount2 = 0; //回傳目前top值
+
+        var leftCount = 0; //回傳目前left值
+        var leftCount2 = 0; //回傳目前left值
+
+        var isTurn = 0; //是否剛好走到轉角
+        var isTurn2 = 0; //是否剛好走到轉角
+
+        var whoGoFirst = 0;  // 0-> Player1,  1-> Player2
+        var countP1 = 0;  //P1目前的格數
+        var countP2 = 0;  //P2目前的格數
+        
+        var p1money = 5000;  //玩家初始金額設定
+        var p2money = 5000;
+        
+        var P1parkCount =0; //p1踩到公園次數
+        var P2parkCount =0;
+        
+        var totalTaxP1;//稅額計算
+        var totalTaxP2;
+        
+        var realEstate=0;  //資產有哪些
+        var bonusAmount =0; //bonus金額
+  
+        var mapID = new Array();         //    產生28個陣列放地的所有人
+          for (var i = 0; i < 28; i++) {
+            mapID[i]=0;
+        }
+        
+        var placeArray = [
+        "原點","苗栗縣","彰化縣","桃園市","屏東縣","高雄市","基隆市","監獄",
+        "台南市","嘉義縣","台北市","命運","澎湖縣","釣魚台","直達",
+        "稅$$","雲林縣","嘉義市","新北市","台東縣","宜蘭縣","bonus",
+        "台中市","新竹縣","南投縣","新竹市","機會","花蓮縣"];
+        
+        var chance = ["騎車未戴安全帽","巧遇老朋友，爽快請對方吃飯","手機掉進馬桶送修",
+        "路邊發酒瘋被檢舉","流感中標看醫生","百貨公司周年慶~失心瘋"];
+        
+        var fate = ["刮刮樂中獎","對中統一發票","打工遇到好客人",
+        "拾金不昧~失主開心回饋","眼光精準~股市大漲","老闆心情大好，加發獎金"];
+    
+        // ---------------------------載入玩家資訊
+        var play1N = localStorage.getItem("player1Name");
+        var play1P = localStorage.getItem("player1img");
+        var play2N = localStorage.getItem("player2Name");
+        var play2P = localStorage.getItem("player2img");
+
+        $("#1name").html(play1N);
+        $("#2name").html(play2N);
+        $("#p1Photo").attr("src", ("imgs/" + play1P + ".gif"));
+        $("#p2Photo").attr("src", ("imgs/" + play2P + ".gif"));
+        $("#playerOne").attr("src", ("imgs/" + play1P + ".gif"));
+        $("#playerTwo").attr("src", ("imgs/" + play2P + ".gif"));
+
+        // ---------------------------載入玩家資訊 end
+
+
+        //-------------------決定順序、亮燈--------------
+        $(document).ready(function () {
+            dice2 = Math.floor((Math.random() * 10000) + 1);
+            if (dice2 % 2 == 1) {
+                whoGoFirst = 0;
+                alert("由Player1開始");
+                $("#frameLight1").css("border-color", "red");
+
+            } else {
+                whoGoFirst = 1;
+                alert("由Player2開始");
+                $("#frameLight2").css("border-color", "blue");
+            }
+        });
+
+        //--------------------丟骰子人物移動-------------
+        $(function () {
+            $("#dice1").click(function () {
+                dice = Math.floor((Math.random() * 6) + 1);
+                  /*---------------------------骰子+/-判斷--------------------------*/
+             var dMoveTop = (dice * 100); //骰子位移量(上下100)*點數
+             var dMoveLeft = (dice * 100);
+             
+             $("#dice1").attr('disabled',true);
+                  switch (whoGoFirst) {
+                      case 0:
+
+                          if (topCount != 700 & leftCount == 0) { //西方路線
+                              topCount += dMoveTop;
+                              countP1 += dice;
+                          }
+                          else if (topCount == 700 & leftCount != 0) { //南方路線
+                              leftCount += dMoveLeft;
+                              countP1 += dice;
+                          }
+                          else if (topCount != 700 & leftCount == 700) { //東方路線
+                              topCount -= dMoveTop;
+                              countP1 += dice;
+                          }
+                          else if (topCount == 0 & leftCount != 700) { //北方路線
+                              leftCount -= dMoveLeft;
+                              countP1 += dice;
+                          }
+                          else if (topCount == 700 & leftCount == 0) { //coner左下
+                              leftCount += dMoveLeft;
+                              countP1 += dice;
+                          }
+                          else if (topCount == 700 & leftCount == 700) { //coner右下
+                              topCount -= dMoveTop;
+                              countP1 += dice;
+                          }
+                          else if (topCount == 0 & leftCount == 700) { //coner右上
+                              leftCount -= dMoveLeft;
+                              countP1 += dice;
+                             
+                          }
+                 //              alert("0-top:" + topCount + " leftCount:" + leftCount + " Turn:" + isTurn);
+                    /*---------------------------人物位移步數-----------------------*/
+                          if (topCount < 700 & topCount > 0) {
+                              if (leftCount == 0) {
+                                  $("#playerPhoto1").animate({
+                                      top: "+=" + dMoveTop
+                                  }, 1500)
+                              }
+                              else if (leftCount == 700) {
+                                  $("#playerPhoto1").animate({
+                                      top: "-=" + dMoveTop
+                                  }, 1500)
+
+                              }
+                              isTurn = 0;
+                              //alert("1-top:" + topCount + " leftCount:" + leftCount);
+                          }
+                          else if (topCount > 700) { //左下轉右時
+                              leftCount = (topCount - 700);
+                              topCount = 700;
+
+                              $("#playerPhoto1").animate({ //超過665時，人物先移到底再向右
+                                  top: topCount
+                              }, 900)
+
+                              $("#playerPhoto1").animate({ //超過665時，人物先移到底再向右
+                                  left: leftCount
+                              }, 1000)
+
+                              isTurn = 0;
+                              //alert("2-top:" + topCount + " leftCount:" + leftCount);
+                          }
+                          else if (topCount == 700 & leftCount < 700 & leftCount != 0) { //下方行走
+
+                              $("#playerPhoto").animate({
+                                  top: topCount
+                              }, 900)
+
+                              $("#playerPhoto1").animate({
+                                  left: leftCount
+                              }, 900)
+
+                              isTurn = 0;
+                              //alert("3-top:" + topCount + " leftCount:" + leftCount);
+                          }
+                          else if (topCount == 700 & leftCount > 700) { //下轉右上
+                              topCount -= (leftCount - 700);
+                              leftCount = 700;
+
+                              $("#playerPhoto1").animate({
+                                  left: leftCount
+                              }, 800)
+
+                              $("#playerPhoto1").animate({
+                                  top: topCount
+                              }, 800)
+
+                              isTurn = 0;
+                              //                    alert("4-top:" + topCount + " leftCount:" + leftCount);
+                          }
+                          else if (topCount < 0) { //右轉左上
+                              leftCount -= (topCount * -1);
+                              topCount = 0;
+
+                              $("#playerPhoto1").animate({
+                                  top: topCount
+                              }, 800)
+
+                              $("#playerPhoto1").animate({
+                                  left: leftCount
+                              }, 800)
+
+                              isTurn = 0;
+                              //alert("5-top:" + topCount + " leftCount:" + leftCount);
+                          }
+                          else if (topCount == 0 & leftCount < 700 & leftCount > 0) { //上方行走
+
+                              $("#playerPhoto1").animate({
+                                  top: topCount
+                              }, 900)
+
+                              $("#playerPhoto1").animate({
+                                  left: leftCount
+                              }, 900)
+
+                              isTurn = 0;
+                              //alert("6-top:" + topCount + " leftCount:" + leftCount);
+
+                          }
+                          else if (topCount == 0 & leftCount < 0) { //上轉左
+                              topCount += (leftCount * -1);
+                              leftCount = 0;
+
+                              $("#playerPhoto1").animate({
+                                  left: leftCount
+                              }, 800)
+
+                              $("#playerPhoto1").animate({
+                                  top: topCount
+                              }, 800)
+
+                              isTurn = 0;
+                              //                  alert("7-top:" + topCount + " leftCount:" + leftCount);
+                          }
+                              /*-----------------------------corner左下----------------------------------*/
+                          else if (topCount == 700 & leftCount == 0 & isTurn == 0) {
+
+                              $("#playerPhoto1").animate({
+                                  top: topCount
+                              }, 800)
+
+                              $("#playerPhoto1").animate({
+                                  left: leftCount
+                              }, 800)
+                              //                 alert("ConerLB-top:" + topCount + " leftCount:" + leftCount);
+                              isTurn = 1;
+                          }
+                              /*-----------------------------END------------------------------*/
+                              /*-----------------------------corner右下----------------------------------*/
+                          else if (topCount == 700 & leftCount == 700 & isTurn == 0) {
+
+                              $("#playerPhoto1").animate({
+                                  top: topCount
+                              }, 800)
+
+                              $("#playerPhoto1").animate({ //人物向右
+                                  left: leftCount
+                              }, 800)
+                              //alert("ConerRB-top:" + topCount + " leftCount:" + leftCount);
+                              isTurn = 1;
+                          }
+                              /*-----------------------------END------------------------------*/
+                              /*-----------------------------corner右上----------------------------------*/
+                          else if (topCount == 0 & leftCount == 700 & isTurn == 0) {
+
+                              $("#playerPhoto1").animate({
+                                  top: topCount
+                              }, 800)
+
+                              $("#playerPhoto1").animate({
+                                  left: leftCount
+                              }, 800)
+                              //                   alert("ConerLB-top:" + topCount + " leftCount:" + leftCount);
+                              isTurn = 1;
+                          }
+                              /*-----------------------------END------------------------------*/
+                              /*-----------------------------corner左上----------------------------------*/
+                          else if (topCount == 0 & leftCount == 0 & isTurn == 0) {
+                              $("#playerPhoto1").animate({
+                                  left: leftCount
+                              }, 800)
+
+                              $("#playerPhoto1").animate({
+                                  top: topCount
+                              }, 800)
+
+                              //alert("ConerLB-top:" + topCount + " leftCount:" + leftCount);
+                              isTurn = 1;
+                          }
+
+                          setTimeout(function () {
+                              $("#frameLight1").css("border-color", "lightgray");
+                              $("#frameLight2").css("border-color", "blue");
+                              $("#playerPhoto1").css("opacity", "0.5");
+                              $("#playerPhoto2").css("opacity", "1");
+
+                          }, 2300);
+
+                          if (countP1 > 27) {    //繞了一圈後
+                              countP1 -= 28; 
+                              p1money += 1500;   //走一圈加錢1500
+                              $("#p1HowMuch").html(p1money);
+                              
+                              $("#p1HowMuch").fadeOut(300)
+                              $("#p1HowMuch").fadeIn(300)
+                              $("#p1HowMuch").fadeOut(300)
+                              $("#p1HowMuch").fadeIn(300)
+                              
+                              $("#infoShow").html("領錢囉~~$1500");
+                              eventFlash();
+                        }
+                        
+                        buyOrNot();
+                        
+
+                          break;
+/*玩家2*/           case 1:
+
+                          if (topCount2 != 700 & leftCount2 == 0) { //西方路線
+                              topCount2 += dMoveTop;
+                              countP2 += dice;
+                          }
+                          else if (topCount2 == 700 & leftCount2 != 0) { //南方路線
+                              leftCount2 += dMoveLeft;
+                              countP2 += dice;
+                          }
+                          else if (topCount2 != 700 & leftCount2 == 700) { //東方路線
+                              topCount2 -= dMoveTop;
+                              countP2 += dice;
+                          }
+                          else if (topCount2 == 0 & leftCount2 != 700) { //北方路線
+                              leftCount2 -= dMoveLeft;
+                              countP2 += dice;
+                          }
+                          else if (topCount2 == 700 & leftCount2 == 0) { //coner左下
+                              leftCount2 += dMoveLeft;
+                              countP2 += dice;
+                          }
+                          else if (topCount == 700 & leftCount == 700) { //coner右下
+                              topCount -= dMoveTop;
+                              countP1 += dice;
+                              alert("coner右下");
+                          }
+                          else if (topCount == 0 & leftCount == 700) { //coner右上
+                              leftCount -= dMoveLeft;
+                              countP1 += dice;
+                              alert("coner右上");
+                          }
+
+    //-----p2人物移動-----
+                          if (topCount2 < 700 & topCount2 > 0) {
+                              if (leftCount2 == 0) {
+                                  $("#playerPhoto2").animate({
+                                      top: "+=" + dMoveTop
+                                  }, 1500)
+                              }
+                              else if (leftCount2 == 700) {
+                                  $("#playerPhoto2").animate({
+                                      top: "-=" + dMoveTop
+                                  }, 1500)
+                              }
+                              isTurn2 = 0;
+                              //alert("1-top:" + topCount + " leftCount:" + leftCount);
+                          }
+                          else if (topCount2 > 700) { //左下轉右時
+                              leftCount2 = (topCount2 - 700);
+                              topCount2 = 700;
+
+                              $("#playerPhoto2").animate({ //超過665時，人物先移到底再向右
+                                  top: topCount2
+                              }, 800)
+
+                              $("#playerPhoto2").animate({ //超過665時，人物先移到底再向右
+                                  left: leftCount2
+                              }, 1000)
+
+                              isTurn2 = 0;
+                              //alert("2-top:" + topCount + " leftCount:" + leftCount);
+                          }
+                          else if (topCount2 == 700 & leftCount2 < 700 & leftCount2 != 0) { //下方行走
+
+                              $("#playerPhoto").animate({
+                                  top: topCount
+                              }, 900)
+
+                              $("#playerPhoto2").animate({
+                                  left: leftCount2
+                              }, 800)
+
+                              isTurn = 0;
+                              //alert("3-top:" + topCount + " leftCount:" + leftCount);
+                          }
+                          else if (topCount2 == 700 & leftCount2 > 700) { //下轉右上
+                              topCount2 -= (leftCount2 - 700);
+                              leftCount2 = 700;
+
+                              $("#playerPhoto2").animate({
+                                  left: leftCount2
+                              }, 700)
+
+                              $("#playerPhoto2").animate({
+                                  top: topCount2
+                              }, 800)
+
+                              isTurn = 0;
+                              //                    alert("4-top:" + topCount + " leftCount:" + leftCount);
+                          }
+                          else if (topCount2 < 0) { //右轉左上
+                              leftCount2 -= (topCount2 * -1);
+                              topCount2 = 0;
+
+                              $("#playerPhoto2").animate({
+                                  top: topCount2
+                              }, 800)
+
+                              $("#playerPhoto2").animate({
+                                  left: leftCount2
+                              }, 800)
+
+                              isTurn2 = 0;
+                             //alert("5-top:" + topCount + " leftCount:" + leftCount);
+                          }
+                          else if (topCount2 == 0 & leftCount2 < 700 & leftCount2 > 0) { //上方行走
+
+                              $("#playerPhoto2").animate({
+                                  top: topCount2
+                              }, 900)
+
+                              $("#playerPhoto2").animate({
+                                  left: leftCount2
+                              }, 900)
+
+                              isTurn2 = 0;
+                              //alert("6-top:" + topCount + " leftCount:" + leftCount);
+                          }
+                          else if (topCount2 == 0 & leftCount2 < 0) { //上轉左
+                              topCount2 += (leftCount2 * -1);
+                              leftCount2 = 0;
+
+                              $("#playerPhoto2").animate({
+                                  left: leftCount2
+                              }, 800)
+
+                              $("#playerPhoto2").animate({
+                                  top: topCount2
+                              }, 800)
+
+                              isTurn2 = 0;
+                              //                  alert("7-top:" + topCount + " leftCount:" + leftCount);
+                          }
+                              /*-----------------------------corner左下----------------------------------*/
+                          else if (topCount2 == 700 & leftCount2 == 0 & isTurn2 == 0) {
+
+                              $("#playerPhoto2").animate({
+                                  top: topCount2
+                              }, 800)
+
+                              $("#playerPhoto2").animate({
+                                  left: leftCount2
+                              }, 800)
+                              //                 alert("ConerLB-top:" + topCount + " leftCount:" + leftCount);
+                              isTurn2 = 1;
+                          }
+                              /*-----------------------------END------------------------------*/
+                              /*-----------------------------corner右下----------------------------------*/
+                          else if (topCount2 == 700 & leftCount2 == 700 & isTurn2 == 0) {
+
+                              $("#playerPhoto2").animate({
+                                  top: topCount2
+                              }, 800)
+
+                              $("#playerPhoto2").animate({ //人物向右
+                                  left: leftCount2
+                              }, 800)
+                              //alert("ConerRB-top:" + topCount + " leftCount:" + leftCount);
+                              isTurn2 = 1;
+                          }
+                              /*-----------------------------END------------------------------*/
+                              /*-----------------------------corner右上----------------------------------*/
+                          else if (topCount2 == 0 & leftCount2 == 700 & isTurn2 == 0) {
+
+                              $("#playerPhoto2").animate({
+                                  top: topCount2
+                              }, 800)
+
+                              $("#playerPhoto2").animate({
+                                  left: leftCount2
+                              }, 800)
+                              //                   alert("ConerLB-top:" + topCount + " leftCount:" + leftCount);
+                              isTurn2 = 1;
+                          }
+                              /*-----------------------------END------------------------------*/
+                              /*-----------------------------corner左上----------------------------------*/
+                          else if (topCount2 == 0 & leftCount2 == 0 & isTurn2 == 0) {
+                              $("#playerPhoto2").animate({
+                                  left: leftCount2
+                              }, 800)
+
+                              $("#playerPhoto2").animate({
+                                  top: topCount2
+                              }, 800)
+
+                              //alert("ConerLB-top:" + topCount + " leftCount:" + leftCount);
+                              isTurn2 = 1;
+                          }
+
+                          setTimeout(function () {
+                              $("#frameLight1").css("border-color", "red");
+                              $("#frameLight2").css("border-color", "lightgray");
+                              $("#playerPhoto2").css("opacity", "0.5");
+                              $("#playerPhoto1").css("opacity", "1");
+                          }, 2300);
+
+                          if (countP2 > 27) { 
+                              countP2 -= 28; 
+                              p2money += 1500;
+                              $("#p2HowMuch").html(p2money);
+
+                              $("#p2HowMuch").fadeOut(300)
+                              $("#p2HowMuch").fadeIn(300)
+                              $("#p2HowMuch").fadeOut(300)
+                              $("#p2HowMuch").fadeIn(300)       
+                              
+                              $("#infoShow").html("領錢囉~~$1500");
+                              eventFlash();
+                          }
+                          
+                          buyOrNot();
+                         
+
+                          break;
+                      default:
+                          alert("bug");
+                }
+                /*-----------------------------END------------------------------*/
+
+            });
+        });
+
+        //----------------------骰子圖片切換-------------------------------------
+        var clickGo = document.getElementById('dice1');
+        var changePic = document.getElementById('dicePic');
+        var i = 1;
+        var timer = null;
+
+        clickGo.onclick = function () {
+            // clearInterval(timer);   //避免多次點擊後越跑越快
+            // timer = setInterval(ch, 100);
+            timer = setTimeout(ch, 1);
+
+            function ch() {
+                i++;
+                if (i > 6) {
+                    i = 1;
+                } //骰子有6張圖
+                changePic.src = ("imgs/dice" + dice + ".png");
+            }
+        }
+
+        //----------------------骰子圖片切換end-------------------------------------
+        //---------------地點與人物對應--ID 7(監獄)  14(直達)  21(Bonus)  28(Go)
+        //var countP1 = 0;  //P1目前的格數
+        //var countP2 = 0;  //P2目前的格數
+        function buyOrNot() {
+            if (whoGoFirst == 0) {             //--------------pl是否買地
+                var p1GoTo = parseInt(countP1);   //丟骰子後走到哪一格
+                var desP1 = document.getElementById(p1GoTo);  //抓到目的地元素
+                var desID1 = parseInt(desP1.id);  //目的地的id
+                var whichColor1 = desP1.bgColor;   //抓到目的地格的背景顏色
+                
+                if(desP1.id !=0){ //start
+                    if(desP1.id !=7){ //temple
+                        if(desP1.id != 14){ //park
+                            if(desP1.id != 21){  //Bonus
+                                if(desP1.id != 11){  //命運
+                                    if(desP1.id != 15){  //稅$$
+                                       if(desP1.id != 26){  //機會
+                                            if(mapID[desID1] == 0){  //<--空地是否購買
+                                                setTimeout(function () {
+                                                    if(confirm("是否花$400購買?")){
+                                                        if(p1money>=400){
+                                                            mapID[desID1] = 1; //陣列相對id的位置放上1號玩家標誌
+                                                            p1money -= 400;
+                                                            desP1.bgColor = "rgba(170, 255, 0, 0.1)"; 
+                                                            $("#p1HowMuch").html(p1money);
+                                                            P1textFlash();//文字閃爍
+                                                           
+                                                        }else{
+                                                            $("#infoShow").html("現金不足!!");
+                                                                textFlash();
+                                                        }//++++++++++++++++文字show買地現金不足
+                                                    }
+                                                }, 2000);
+                                                
+                                            }else if(mapID[desID1] == 2){    //<--踩到別人的空地賠款
+                                                    setTimeout(function () {
+                                                        p1money -= (400*0.8);
+                                                        if(p1money<0){  //+++++++++++++++踩到別人的地沒錢破產了
+                                                            $("#infoShow").html("破產啦~");
+                                                            textFlash();
+                                                            setTimeout(function(){
+                                                                p2Win(); /*成績板*/
+                                                            },1500);
+                                                        }
+                                                        
+                                                        $("#p1HowMuch").html(p1money);
+                                                        P1textFlash();//文字閃爍
+                                                    }, 2000);
+                                                        
+                                                    setTimeout(function(){
+                                                        p2money += (400*0.8);  //付錢給對方
+                                                        $("#p2HowMuch").html(p2money);
+                                                        P2textFlash()//文字閃爍
+                                                        
+                                                        $("#infoShow").html("損失$320");
+                                                        textFlash();
+                                                    },2300);
+                                            }else if(mapID[desID1] == 1){
+                                                setTimeout(function () {
+                                                    if(confirm("是否花$600蓋房?")){    //擴建1
+                                                        if(p1money>=600){
+                                                            mapID[desID1] =3; //陣列相對id的位置放上1號玩家標誌
+                                                            p1money -= 600;
+                                                            $("#"+desID1).html('<img src="imgs/house1.png" style="width:45px; height:35px; margin-top:-60px; margin-button:-50px;">'+placeArray[desID1]);
+                                                            $("#p1HowMuch").html(p1money);
+                                                            P1textFlash();//文字閃爍
+                                                        }else{   //++++++++++++++++文字show買地現金不足
+                                                            $("#infoShow").html("現金不足!!");
+                                                            textFlash();
+                                                        }
+                                                    }
+                                                }, 2000);
+                                            }else if(mapID[desID1] == 4){  //踩到別人1房
+                                                setTimeout(function () {
+                                                    p1money -= (1000*0.8);
+                                                    
+                                                    if(p1money<0){  //+++++++++++++++踩到別人的地沒錢破產了
+                                                    $("#infoShow").html("破產啦~");
+                                                    textFlash();
+                                                        setTimeout(function(){
+                                                            p2Win(); /*成績板*/
+                                                        },1500);
+                                                    }
+                                                    
+                                                    $("#p1HowMuch").html(p1money);
+                                                    P1textFlash();//文字閃爍
+                                                }, 2000);
+                                                
+                                                setTimeout(function(){
+                                                    p2money += (1000*0.8);  //付錢給對方
+                                                    $("#p2HowMuch").html(p2money);
+                                                    P2textFlash()//文字閃爍
+                                                    
+                                                    $("#infoShow").html("損失$800");
+                                                    textFlash();
+                                                },2300);
+                                                
+                                            }else if(mapID[desID1] == 3){
+                                                setTimeout(function () {
+                                                    if(confirm("是否花$1000擴建?")){    //擴建2
+                                                        if(p1money>=1000){
+                                                           mapID[desID1] = 5; //陣列相對id的位置放上1號玩家標誌
+                                                            p1money -= 1000;
+                                                             $("#"+desID1).html('<img src="imgs/house2.png" style="width:45px; height:35px; margin-top:-60px; margin-button:-50px;">'+placeArray[desID1]);
+                                                            $("#p1HowMuch").html(p1money);
+                                                            P1textFlash();//文字閃爍
+                                                        }else{   //++++++++++++++++文字show買地現金不足
+                                                            $("#infoShow").html("現金不足!!");
+                                                            textFlash();
+                                                        }
+                                                }}, 2000);
+                                            }else if(mapID[desID1] == 6){  //踩到別人2房
+                                                setTimeout(function () {
+                                                    p1money -= (2000*0.8);
+                                                    
+                                                    if(p1money<0){  //+++++++++++++++踩到別人的地沒錢破產了
+                                                    $("#infoShow").html("破產啦~");
+                                                    textFlash();
+                                                        setTimeout(function(){
+                                                                    p2Win(); /*成績板*/
+                                                        },1500);
+                                                    }
+                                                    
+                                                    $("#p1HowMuch").html(p1money);
+                                                    P1textFlash();//文字閃爍
+                                                }, 2000);
+                                                
+                                                setTimeout(function(){
+                                                    p2money += (2000*0.8);  //付錢給對方
+                                                    $("#p2HowMuch").html(p2money);
+                                                    P2textFlash()//文字閃爍
+                                                    
+                                                    $("#infoShow").html("損失$1600");
+                                                    textFlash();
+                                                }, 2300);
+                                            }
+                                       } else{//機會
+                                           var random = Math.floor((Math.random() * 6));
+                                           var result = chance[random]; 
+                                           setTimeout(function(){
+                                               var getHowmuch = ((random+1)*1000/5);
+                                               p1money-=getHowmuch; 
+                                                if(p1money<0){  //+++++++++++++++踩到別人的地沒錢破產了
+                                                $("#infoShow").html("破產啦~");
+                                                textFlash();
+                                                    setTimeout(function(){
+                                                        p2Win(); /*成績板*/
+                                                    },1500);
+                                                }
+                                               $("#p1HowMuch").html(p1money);
+                                               P1textFlash();//文字閃爍
+                                                        
+                                               $("#infoShow").html(result +"損失$"+getHowmuch ); //文字提示
+                                               eventFlash();
+                                            }, 1800 );
+                                       }
+                                    }else{ //稅
+                                        taxCount();
+                                        if(totalTaxP1 != 0){
+                                            setTimeout(function(){
+                                                p1money-=totalTaxP1;   //扣稅
+                                                if(p1money<0){  //+++++++++++++++踩到別人的地沒錢破產了
+                                                $("#infoShow").html("破產啦~");
+                                                textFlash();
+                                                    setTimeout(function(){
+                                                        p2Win(); /*成績板*/
+                                                    },1500);
+                                                }
+                                                $("#p1HowMuch").html(p1money);
+                                                P1textFlash();//文字閃爍
+                                                
+                                                $("#infoShow").html("貢獻國庫$"+totalTaxP1); //文字提示
+                                                eventFlash();
+                                                
+                                            }, 1800 );
+                                        }else{
+                                            setTimeout(function(){
+                                                $("#infoShow").html("繼續加把勁吧!!"); //文字提示
+                                                eventFlash();
+                                            }, 1800 );
+                                        }
+                                    }
+                                } else{ //命運
+                                var random = Math.floor((Math.random() * 6));
+                                var result = fate[random]; 
+                                    setTimeout(function(){
+                                        var getHowmuch = ((random+1)*1000/5);
+                                        p1money+=getHowmuch;   
+                                        $("#p1HowMuch").html(p1money);
+                                        P1textFlash();//文字閃爍
+                                                
+                                        $("#infoShow").html(result +"得到$"+getHowmuch ); //文字提示
+                                        eventFlash();
+                                    }, 1800 );
+                                }
+                            }else{  //alert("21");
+                                bonusFun();
+                                p1money+=bonusAmount;
+                                bonusAmount += 1;
+                                setTimeout(function(){
+                                    $("#infoShow").html("挖到寶啦~~~獲得$" + bonusAmount); //文字提示
+                                    eventFlash(); 
+                                }, 1800 );
+                               
+                                $("#p1HowMuch").html(p1money);
+                                P1textFlash();
+                            }
+                        } else{//alert("14");
+                        }
+                    } else{  //alert("7")
+                        if(P1parkCount <3){
+                            $("#infoShow").html("香煙裊裊、鳥語花香、充滿希望~");
+                              
+                        }else if(P1parkCount >=3){
+                            var goodMan = (dice * 1000 * P1parkCount / 5);
+                            $("#infoShow").html("虔誠的信徒~誠心祈禱~有求必應 ++$$" + goodMan);
+                        }
+                      eventFlash();
+                      P1parkCount +=1;
+                    }
+                } //start
+                
+                setTimeout(function(){
+                    whoGoFirst = 1;
+                    $("#dice1").attr('disabled',false);
+                }, 1800 );
+            } else {           //--------------p2是否買地
+                var p2GoTo = parseInt(countP2);
+                var desP2 = document.getElementById(p2GoTo);
+                var desID2 = parseInt(desP2.id);  //目的地的id
+                var whichColor2 = desP2.bgColor;
+                if(desP2.id !=0){  //start
+                    if(desP2.id !=7){  //temple
+                        if(desP2.id != 14){  //park
+                            if(desP2.id != 21){   //Bonus
+                                if(desP2.id != 11){  //命運
+                                    if(desP2.id != 15){  //稅$$
+                                       if(desP2.id != 26){  //機會
+                                            if(mapID[desID2] == 0){
+                                                setTimeout(function () {
+                                                if(confirm("是否花$400購買?")){
+                                                    if(p2money>=400){
+                                                        mapID[desID2] = 2; //陣列相對id的位置放上1號玩家標誌
+                                                        p2money -= 400;
+                                                        desP2.bgColor = "blue";  //從取得陣列內容，判斷是否有人佔地???未寫
+                                                        $("#p2HowMuch").html(p2money);
+                                                        P2textFlash()//文字閃爍
+                                                    }else{
+                                                        $("#infoShow").html("現金不足!!");
+                                                        textFlash();
+                                                    }//++++++++++++++++文字show買地現金不足
+                                                }}, 2000);
+                                            }else if(mapID[desID2] == 1){   //踩地賠款
+                                                setTimeout(function () {
+                                                    p2money -= (400*0.8);
+                                                    
+                                                    if(p2money<0){  //+++++++++++++++踩到別人的地沒錢破產了
+                                                        $("#infoShow").html("破產啦~");
+                                                        textFlash();
+                                                        setTimeout(function(){
+                                                            p1Win(); /*成績板*/
+                                                        },1500);
+                                                    }
+                                                    
+                                                    $("#p2HowMuch").html(p2money);
+                                                    P2textFlash()//P2文字閃爍
+                                                }, 2000);
+                                                
+                                                setTimeout(function(){
+                                                    p1money += (400*0.8);  //付錢給對方
+                                                    $("#p1HowMuch").html(p1money);
+                                                    P1textFlash();//文字閃爍
+                                                    
+                                                    $("#infoShow").html("損失$320");
+                                                    textFlash();
+                                                },2300);
+                                            }else if(mapID[desID2] == 2){  //擴建1
+                                                setTimeout(function () {
+                                                if(confirm("是否花$600蓋房?")){
+                                                    if(p2money>=600){
+                                                       mapID[desID2] = 4; //陣列相對id的位置放上1號玩家標誌
+                                                        p2money -= 600;
+                                                        $("#"+desID2).html('<img src="imgs/house1.png" style="width:45px; height:35px; margin-top:-60px; margin-button:-50px;">'+placeArray[desID2]);
+                                                        $("#p2HowMuch").html(p2money);
+                                                        P2textFlash()//文字閃爍
+                                                    }else{
+                                                        $("#infoShow").html("現金不足!!");
+                                                        textFlash();
+                                                    }//++++++++++++++++文字show買地現金不足
+                                                }}, 2000);
+                                            }else if(mapID[desID2] == 3){  //踩到別人1房
+                                                setTimeout(function () {
+                                                    p2money -= (1000*0.8);
+                                                    
+                                                    if(p2money<0){  //+++++++++++++++踩到別人的地沒錢破產了
+                                                        $("#infoShow").html("破產啦~");
+                                                        textFlash();
+                                                        setTimeout(function(){
+                                                            p1Win(); /*成績板*/
+                                                        },1500);
+                                                    }
+                                                    
+                                                    $("#p2HowMuch").html(p2money);
+                                                    P2textFlash()//文字閃爍
+                                                }, 2000);
+                                                
+                                                setTimeout(function(){
+                                                    p1money += (1000*0.8);  //付錢給對方
+                                                    $("#p1HowMuch").html(p1money);
+                                                    P1textFlash();//文字閃爍
+                                                    
+                                                    $("#infoShow").html("損失$800");
+                                                    textFlash();
+                                                },2300);
+                                            }else if(mapID[desID2] == 4){  //擴建2
+                                                setTimeout(function () {
+                                                if(confirm("是否花$1000擴建?")){
+                                                    if(p2money>=600){
+                                                        mapID[desID2] = 6
+                                                        p2money -= 1000;
+                                                        $("#"+desID2).html('<img src="imgs/house2.png" style="width:45px; height:35px; margin-top:-60px; margin-button:-50px;">'+placeArray[desID2]);
+                                                        $("#p2HowMuch").html(p2money);
+                                                        P2textFlash()//文字閃爍
+                                                    }else{
+                                                       $("#infoShow").html("現金不足!!");
+                                                        textFlash();
+                                                    }//++++++++++++++++文字show買地現金不足
+                                                }}, 2000);  
+                                            }else if(mapID[desID2] == 5){  //踩到別人2房
+                                                setTimeout(function () {
+                                                    p2money -= (2000*0.8);
+                                                    
+                                                    if(p2money<0){  //+++++++++++++++踩到別人的地沒錢破產了
+                                                    $("#infoShow").html("破產啦~");
+                                                    textFlash();
+                                                        setTimeout(function(){
+                                                            p1Win(); /*成績板*/
+                                                        },1500);
+                                                    }
+                                                    
+                                                    $("#p2HowMuch").html(p2money);
+                                                    P2textFlash()//文字閃爍
+                                                }, 2000);
+                                                
+                                                setTimeout(function(){
+                                                    p1money += (2000*0.8);  //付錢給對方
+                                                    $("#p1HowMuch").html(p1money);
+                                                    P1textFlash();//文字閃爍
+                                                    
+                                                    $("#infoShow").html("損失$1600");
+                                                    textFlash();
+                                                },2300);
+                                            }
+                                       } else{//機會
+                                            var random = Math.floor((Math.random() * 6));
+                                            var result = chance[random] ;
+                                            setTimeout(function(){
+                                            var getHowmuch = ((random+1)*1000/5);
+                                            p2money-=getHowmuch; 
+                                            
+                                            if(p2money<0){  //+++++++++++++++踩到別人的地沒錢破產了
+                                                $("#infoShow").html("破產啦~");
+                                                textFlash();
+                                                setTimeout(function(){
+                                                    p1Win(); /*成績板*/
+                                                },1500);
+                                            }
+                                            
+                                            $("#p2HowMuch").html(p2money);
+                                            P2textFlash();
+                                                    
+                                            $("#infoShow").html(result+"損失$"+getHowmuch);
+                                            eventFlash();
+                                            }, 1800 );
+                                       }
+                                    }else{// tax
+                                        taxCount();
+                                        if(totalTaxP2 !=0){
+                                            setTimeout(function(){
+                                                p2money-=totalTaxP2;   //扣稅
+                                                
+                                                if(p2money<0){  //+++++++++++++++踩到別人的地沒錢破產了
+                                                $("#infoShow").html("破產啦~");
+                                                textFlash();
+                                                    setTimeout(function(){
+                                                        p1Win(); /*成績板*/
+                                                    },1500);
+                                                }
+                                                
+                                                $("#p2HowMuch").html(p2money);
+                                                P2textFlash();//文字閃爍
+                                                
+                                                $("#infoShow").html("貢獻國庫$"+totalTaxP2); //文字提示
+                                                eventFlash();
+                                            }, 1800 );
+                                        }else{
+                                            setTimeout(function(){
+                                                $("#infoShow").html("繼續加把勁吧!!"); //文字提示
+                                                eventFlash(); 
+                                            }, 1800 );
+                                        }
+                                    }
+                                }else{ //命運
+                                    var random = Math.floor((Math.random() * 6));
+                                    var result = fate[random] ;
+                                    setTimeout(function(){
+                                        var getHowmuch = ((random+1)*1000/5);
+                                        p2money+=getHowmuch;   
+                                        $("#p2HowMuch").html(p2money);
+                                        P2textFlash();
+                                                
+                                        $("#infoShow").html(result+"得到$"+getHowmuch);
+                                        eventFlash();
+                                    }, 1800 );
+                                }
+                            }else{ //alert("21");
+                                bonusFun();
+                                bonusAmount += 1;
+                                p2money+=bonusAmount;
+                              
+                                setTimeout(function(){
+                                    $("#infoShow").html("挖到寶啦~~~獲得$" + bonusAmount); //文字提示
+                                    eventFlash(); 
+                                }, 1800 );
+                              
+                                $("#p2HowMuch").html(p2money);
+                                P2textFlash();
+                            }
+                        } else{}//alert("14");
+                    } else{   //alert("7");
+                        if(P2parkCount <3){
+                            $("#infoShow").html("香煙裊裊、鳥語花香、充滿希望~");
+                              
+                        }else if(P2parkCount >=3){
+                            var goodMan = (dice * 1000 * P2parkCount / 5);
+                            $("#infoShow").html("虔誠的信徒~誠心祈禱~有求必應 ++$$" + goodMan);
+                        }
+                      
+                      eventFlash();
+                      P2parkCount +=1;
+                    }
+                } else{}   //start
+                setTimeout(function(){
+                    whoGoFirst = 0; 
+                    $("#dice1").attr('disabled',false);
+                }, 1800 );
+                 
+            }  
+        }
+       
+        //------------------屬性設定-------------------------------------------
+        
+        $("#p1HowMuch").html(p1money);    //---------------初始金額一開始載入就show在畫面
+        $("#p2HowMuch").html(p1money); 
+
+        function P1textFlash(){          //----------------玩家1金額閃爍提醒 
+            $("#p1HowMuch").fadeOut(500);
+            $("#p1HowMuch").fadeIn(500);
+            $("#p1HowMuch").fadeOut(300);
+            $("#p1HowMuch").fadeIn(300);
+        }
+        
+        function P2textFlash(){          //----------------玩家2金額閃爍提醒 
+            $("#p2HowMuch").fadeOut(500);
+            $("#p2HowMuch").fadeIn(500);
+            $("#p2HowMuch").fadeOut(300);
+            $("#p2HowMuch").fadeIn(300);
+        }
+        
+        function textFlash(){           //-----------------文字提醒
+            $("#infoShow").fadeIn(400);
+            $("#infoShow").fadeOut(900);
+            $("#infoShow").fadeIn(400);
+            $("#infoShow").fadeOut(600);
+        }
+        
+        function eventFlash(){           //-----------------文字提醒
+            $("#infoShow").fadeIn(400);
+            $("#infoShow").fadeOut(2900);
+        }
+      
+        function taxCount(){            //-----------------扣稅
+            var idString =0;
+                                        
+            for(var i=0; i<28; i++){
+                idString = mapID[i];
+                realEstate += idString.toString();
+            }
+            //split用法就是把指定的字取出來,取出來算長度(幾個)時要減一不然會多一個
+            var blankP1 = realEstate.split("1").length-1;     //P1 空地幾塊
+            var howHouse1P1 = realEstate.split("3").length-1; //P1 1房幾棟
+            var howHouse2P1 = realEstate.split("5").length-1; //P1 2房幾棟
+            var totalValueP1 = (blankP1*400)+(howHouse1P1*600)+(howHouse2P1*1000);//總資產
+            totalTaxP1 = totalValueP1*0.08; //稅額等於總資產*0.08 
+            
+            var blankP2 = realEstate.split("2").length-1;  //P2 空地幾塊
+            var howHouse1P2 = realEstate.split("4").length-1; //P2 1房幾棟
+            var howHouse2P2 = realEstate.split("6").length-1; //P2 2房幾棟
+            var totalValueP2 = (blankP2*400)+(howHouse1P2*600)+(howHouse2P2*1000);//總資產
+            totalTaxP2 = totalValueP2*0.08; //稅額等於總資產*0.08
+        }
+       
+       function bonusFun(){
+        bonusAmount = (100 * dice * Math.floor((Math.random() * 10)))*0.1;
+        
+       }
+       
+       function p1Win(){
+           $("#whiteLayer").css("top","30px");
+           $("#winnerName").html(play1N +"獲勝");
+       }
+       
+       function p2Win(){
+           $("#whiteLayer").css("top","30px");
+           $("#winnerName").html(play2N +"獲勝");
+       }
+       
+       $("#boxclose").click( /*遊戲結束回到選角頁面*/
+            function() {
+            document.location = 'WelcomPage.html';
+       })
+    </script>
+</body>
+</html>
